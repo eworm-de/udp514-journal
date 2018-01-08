@@ -1,0 +1,7 @@
+*~
+*.o
+udp514-journal
+README.html
+version.h
+udp514-journal-*.tar.xz
+udp514-journal-*.tar.xz.asc
