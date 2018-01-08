@@ -14,13 +14,13 @@ int main(int argc, char **argv) {
 	char buffer[BUFFER_SIZE];
 	const int y = 1;
 
-	/* Socket erzeugen */
+	/* open socket */
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 		perror("could not open socket");
 		return EXIT_FAILURE;
 	}
 
-	/* Lokalen Server Port bind(en) */
+	/* bind local socket port */
 	servAddr.sin_family = AF_INET;
 	servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	servAddr.sin_port = htons(LOCAL_SERVER_PORT);
