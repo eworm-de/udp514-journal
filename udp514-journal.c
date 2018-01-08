@@ -8,7 +8,7 @@
 #include "udp514-journal.h"
 
 int main(int argc, char **argv) {
-	int s, rc, n;
+	int s, n;
 	socklen_t len;
 	struct sockaddr_in cliAddr, servAddr;
 	char buffer[BUFFER_SIZE];
@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
 	servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	servAddr.sin_port = htons(LOCAL_SERVER_PORT);
 	setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &y, sizeof(int));
-	if ((rc = bind(s, (struct sockaddr *) &servAddr, sizeof(servAddr))) < 0) {
+	if (bind(s, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
 		perror("could not bind on port " LOCAL_SERVER_PORT_STR);
 		return EXIT_FAILURE;
 	}
