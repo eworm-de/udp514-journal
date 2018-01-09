@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
 	struct sockaddr_in cliAddr, servAddr;
 	char buffer[BUFFER_SIZE];
 	const int y = 1;
+	unsigned int count = 0;
 
 	/* open socket */
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
@@ -48,6 +49,9 @@ int main(int argc, char **argv) {
 		sd_journal_send("MESSAGE=%s: %s", inet_ntoa(cliAddr.sin_addr), buffer,
 			"IP_ADDRESS=%s", inet_ntoa(cliAddr.sin_addr),
 			NULL);
+
+		/* count and update status */
+		sd_notifyf(0, "READY=1\nSTATUS=Forwarded %d syslog messages.", ++count);
 	}
 
 	return EXIT_SUCCESS;
