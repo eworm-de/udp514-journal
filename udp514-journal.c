@@ -46,8 +46,8 @@ int main(int argc, char **argv) {
 		}
 	
 		/* send to systemd-journald */
-		sd_journal_send("MESSAGE=%s: %s", inet_ntoa(cliAddr.sin_addr), buffer,
-			"IP_ADDRESS=%s", inet_ntoa(cliAddr.sin_addr),
+		sd_journal_send("MESSAGE=%s", buffer,
+			"SYSLOG_IDENTIFIER=%s", inet_ntoa(cliAddr.sin_addr),
 			NULL);
 
 		/* count and update status */
