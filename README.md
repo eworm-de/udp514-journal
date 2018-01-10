@@ -37,5 +37,5 @@ Make sure UDP port 514 is not blocked in your firewall.
 
 ### Upstream
 
-URL: [GitHub.com](https://github.com/eworm-de/udp514-journal)
+URL: [GitHub.com](https://github.com/eworm-de/udp514-journal)  
 Mirror: [eworm.de](https://git.eworm.de/cgit.cgi/udp514-journal/)
