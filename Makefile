@@ -14,7 +14,7 @@ LDFLAGS	+= -Wl,-z,now -Wl,-z,relro -pie
 
 # this is just a fallback in case you do not use git but downloaded
 # a release tarball...
-VERSION := 0.0.2
+VERSION := 0.0.3
 
 all: udp514-journal README.html
 
