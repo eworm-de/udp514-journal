@@ -51,5 +51,9 @@ Filtering is available with matching `SYSLOG_IDENTIFIER` the ip address:
 
 ### Upstream
 
-URL: [GitHub.com](https://github.com/eworm-de/udp514-journal)  
-Mirror: [eworm.de](https://git.eworm.de/cgit.cgi/udp514-journal/)
+URL:
+[GitHub.com](https://github.com/eworm-de/udp514-journal)  
+
+Mirror:
+[eworm.de](https://git.eworm.de/cgit.cgi/udp514-journal/)
+[GitLab.com](https://gitlab.com/eworm-de/udp514-journal)  
