@@ -9,7 +9,7 @@ Requirements
 To compile and run `udp514-journal` you need:
 
 * [systemd](https://www.github.com/systemd/systemd)
-* [markdown](http://daringfireball.net/projects/markdown/) (HTML documentation)
+* [markdown](https://daringfireball.net/projects/markdown/) (HTML documentation)
 
 Build and install
 -----------------
