@@ -45,5 +45,5 @@ distclean:
 
 release:
 	git archive --format=tar.xz --prefix=udp514-journal-$(VERSION)/ $(VERSION) > udp514-journal-$(VERSION).tar.xz
-	gpg -ab udp514-journal-$(VERSION).tar.xz
-	git notes --ref=refs/notes/signatures/tar add -C $$(git archive --format=tar --prefix=udp514-journal-$(VERSION)/ $(VERSION) | gpg --armor --detach-sign | git hash-object -w --stdin) $(VERSION)
+	gpg --armor --detach-sign --comment udp514-journal-$(VERSION).tar.xz udp514-journal-$(VERSION).tar.xz
+	git notes --ref=refs/notes/signatures/tar add -C $$(git archive --format=tar --prefix=udp514-journal-$(VERSION)/ $(VERSION) | gpg --armor --detach-sign --comment udp514-journal-$(VERSION).tar | git hash-object -w --stdin) $(VERSION)
