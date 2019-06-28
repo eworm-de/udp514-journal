@@ -22,7 +22,7 @@ version.h: $(wildcard .git/HEAD .git/index .git/refs/tags/*) Makefile
 	printf "#ifndef VERSION\n#define VERSION \"%s\"\n#endif\n" $(shell git describe --long 2>/dev/null || echo ${VERSION}) > $@
 
 udp514-journal: udp514-journal.c udp514-journal.h version.h
-	$(CC) $(CFLAGS) $(LDFLAGS) -o udp514-journal udp514-journal.c
+	$(CC) udp514-journal.c $(CFLAGS) $(LDFLAGS) -o udp514-journal
 
 README.html: README.md
 	$(MD) README.md > README.html
