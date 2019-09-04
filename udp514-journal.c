@@ -8,7 +8,7 @@
 #include "udp514-journal.h"
 
 int main(int argc, char **argv) {
-	int sock, num;
+	int sock;
 	socklen_t len;
 	struct sockaddr_in cliAddr, servAddr;
 	char buffer[BUFFER_SIZE];
@@ -42,9 +42,7 @@ int main(int argc, char **argv) {
 
 		memset(buffer, 0, BUFFER_SIZE);
 		len = sizeof(cliAddr);
-		num = recvfrom(sock, buffer, BUFFER_SIZE, 0,
-			(struct sockaddr *) &cliAddr, &len);
-		if (num < 0) {
+		if (recvfrom(sock, buffer, BUFFER_SIZE, 0, (struct sockaddr *) &cliAddr, &len) < 0) {
 			perror("could not receive data");
 			continue;
 		}
