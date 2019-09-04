@@ -8,15 +8,15 @@
 #include "udp514-journal.h"
 
 int main(int argc, char **argv) {
-	int s, n;
+	int sock, num;
 	socklen_t len;
 	struct sockaddr_in cliAddr, servAddr;
 	char buffer[BUFFER_SIZE];
-	const int y = 1;
+	const int opt_val = 1;
 	unsigned int count = 0;
 
 	/* open socket */
-	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 		perror("could not open socket");
 		return EXIT_FAILURE;
 	}
@@ -25,8 +25,8 @@ int main(int argc, char **argv) {
 	servAddr.sin_family = AF_INET;
 	servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	servAddr.sin_port = htons(LOCAL_SERVER_PORT);
-	setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &y, sizeof(int));
-	if (bind(s, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
+	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt_val, sizeof(opt_val));
+	if (bind(sock, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
 		perror("could not bind on port " LOCAL_SERVER_PORT_STR);
 		return EXIT_FAILURE;
 	}
@@ -42,9 +42,9 @@ int main(int argc, char **argv) {
 
 		memset(buffer, 0, BUFFER_SIZE);
 		len = sizeof(cliAddr);
-		n = recvfrom(s, buffer, BUFFER_SIZE, 0,
+		num = recvfrom(sock, buffer, BUFFER_SIZE, 0,
 			(struct sockaddr *) &cliAddr, &len);
-		if (n < 0) {
+		if (num < 0) {
 			perror("could not receive data");
 			continue;
 		}
@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 	}
 
 	/* close socket */
-	close(s);
+	close(sock);
 
 	return EXIT_SUCCESS;
 }
