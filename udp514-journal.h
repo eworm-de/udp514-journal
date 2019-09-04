@@ -8,6 +8,10 @@
 #ifndef _UDP514_JOURNAL_H
 #define _UDP514_JOURNAL_H
 
+#define _POSIX_C_SOURCE 200809L
+
+#define SYSLOG_NAMES
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>

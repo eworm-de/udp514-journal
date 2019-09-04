@@ -36,6 +36,10 @@ int main(int argc, char **argv) {
 
 	/* server loop */
 	while (1) {
+		char * match;
+		CODE * pri;
+		uint8_t priority = LOG_INFO;
+
 		memset(buffer, 0, BUFFER_SIZE);
 		len = sizeof(cliAddr);
 		n = recvfrom(s, buffer, BUFFER_SIZE, 0,
@@ -44,10 +48,19 @@ int main(int argc, char **argv) {
 			perror("could not receive data");
 			continue;
 		}
-	
+
+		/* parse priority */
+		if ((match = strndup(buffer, BUFFER_SIZE)) != NULL) {
+			*strchr(match, ' ') = 0;
+			for (pri = prioritynames; pri->c_name && strstr(match, pri->c_name) == NULL; pri++);
+			free(match);
+			priority = pri->c_val;
+		}
+
 		/* send to systemd-journald */
 		sd_journal_send("MESSAGE=%s", buffer,
 			"SYSLOG_IDENTIFIER=%s", inet_ntoa(cliAddr.sin_addr),
+			"PRIORITY=%i", priority,
 			NULL);
 
 		/* count and update status */
