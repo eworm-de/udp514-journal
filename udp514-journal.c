@@ -54,5 +54,8 @@ int main(int argc, char **argv) {
 		sd_notifyf(0, "READY=1\nSTATUS=Forwarded %d syslog messages.", ++count);
 	}
 
+	/* close socket */
+	close(s);
+
 	return EXIT_SUCCESS;
 }
