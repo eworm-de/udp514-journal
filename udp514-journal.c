@@ -9,9 +9,7 @@
 
 int main(int argc, char **argv) {
 	int sock;
-	socklen_t len;
 	struct sockaddr_in cliAddr, servAddr;
-	char buffer[BUFFER_SIZE];
 	const int opt_val = 1;
 	unsigned int count = 0;
 
@@ -36,6 +34,8 @@ int main(int argc, char **argv) {
 
 	/* server loop */
 	while (1) {
+		char buffer[BUFFER_SIZE];
+		socklen_t len;
 		char * match;
 		CODE * pri;
 		uint8_t priority = LOG_INFO;
