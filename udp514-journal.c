@@ -49,7 +49,9 @@ int main(int argc, char **argv) {
 
 		/* parse priority */
 		if ((match = strndup(buffer, BUFFER_SIZE)) != NULL) {
-			*strchr(match, ' ') = 0;
+			char * space = strchr(match, ' ');
+			if (space != NULL)
+				*space = 0;
 			for (pri = prioritynames; pri->c_name && strstr(match, pri->c_name) == NULL; pri++);
 			free(match);
 			priority = pri->c_val;
