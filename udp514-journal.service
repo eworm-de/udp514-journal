@@ -5,6 +5,7 @@ After=network.target
 
 [Service]
 Type=notify
+Restart=always
 ExecStart=/usr/bin/udp514-journal
 DynamicUser=on
 AmbientCapabilities=CAP_NET_BIND_SERVICE
