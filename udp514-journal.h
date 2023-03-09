@@ -21,8 +21,6 @@
 
 #define _POSIX_C_SOURCE 200809L
 
-#define SYSLOG_NAMES
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -34,6 +32,10 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <time.h>
+
+#define SYSLOG_NAMES
+#define __USE_MISC
+#include <sys/syslog.h>
 
 #include <systemd/sd-journal.h>
 #include <systemd/sd-daemon.h>
