@@ -17,28 +17,23 @@
  */
 
 #include "udp514-journal.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <systemd/sd-daemon.h>
+#include <stdbool.h>
 
 int main(int argc, char **argv) {
 	int sock;
-	struct sockaddr_in cliAddr, servAddr;
-	const int opt_val = 1;
+	struct sockaddr_in cliAddr;
 	unsigned int count = 0;
 
-	/* open socket */
-	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		perror("could not open socket");
+	size_t num_socks = sd_listen_fds(/*unset_environment=*/true);
+	if (num_socks != 1) {
+		fprintf(stderr, "Invalid number of sockets received from systemd: expected 1, got %zu", num_socks);
 		return EXIT_FAILURE;
 	}
 
-	/* bind local socket port */
-	servAddr.sin_family = AF_INET;
-	servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	servAddr.sin_port = htons(LOCAL_SERVER_PORT);
-	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt_val, sizeof(opt_val));
-	if (bind(sock, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
-		perror("could not bind on port " LOCAL_SERVER_PORT_STR);
-		return EXIT_FAILURE;
-	}
+	sock = SD_LISTEN_FDS_START;
 
 	/* tell systemd we are ready to go... */
 	sd_notify(0, "READY=1\nSTATUS=Listening for syslog input...");

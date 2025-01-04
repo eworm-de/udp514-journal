@@ -25,14 +25,13 @@ followed by:
 This will place an executable at `/usr/bin/udp514-journal`,
 documentation can be found in `/usr/share/doc/udp514-journal/`.
 Additionally a systemd unit file is installed to
-`/usr/lib/systemd/system/udp514-journal.service`.
+`/usr/lib/systemd/system/udp514-journal.socket`.
 
 Usage
 -----
 
-Just run `udp514-journal` or start a systemd unit with
-`systemctl start udp514-journal`. Make sure UDP port 514 is not blocked
-in your firewall.
+Start the systemd unit using `systemctl start udp514-journal.socket`.
+Make sure UDP port 514 is not blocked in your firewall.
 
 Use `journalctl` to view the logs:
 
