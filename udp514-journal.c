@@ -24,7 +24,6 @@
 
 int main(int argc, char **argv) {
 	int sock;
-	struct sockaddr_in cliAddr;
 	unsigned int count = 0;
 
 	size_t num_socks = sd_listen_fds(/*unset_environment=*/true);
@@ -46,9 +45,12 @@ int main(int argc, char **argv) {
 		CODE * pri;
 		uint8_t priority = LOG_INFO;
 
+		struct sockaddr_in6 cliAddr6;
+		struct sockaddr *cliAddr = (struct sockaddr *)&cliAddr6;
+
 		memset(buffer, 0, BUFFER_SIZE);
-		len = sizeof(cliAddr);
-		if (recvfrom(sock, buffer, BUFFER_SIZE, 0, (struct sockaddr *) &cliAddr, &len) < 0) {
+		len = sizeof(cliAddr6);
+		if (recvfrom(sock, buffer, BUFFER_SIZE, 0, cliAddr, &len) < 0) {
 			perror("could not receive data");
 			continue;
 		}
@@ -63,9 +65,24 @@ int main(int argc, char **argv) {
 			priority = pri->c_val;
 		}
 
+		char addr_buf[64];
+		const char *ret = NULL;
+		sa_family_t family = cliAddr->sa_family;
+		if (family == AF_INET) {
+			ret = inet_ntop(family, &((struct sockaddr_in *)cliAddr)->sin_addr, addr_buf, sizeof addr_buf);
+		} else if (family == AF_INET6) {
+			ret = inet_ntop(family, &((struct sockaddr_in6 *)cliAddr)->sin6_addr, addr_buf, sizeof addr_buf);
+		} else {
+			fprintf(stderr, "Unhandled address family %u", family);
+		}
+		if (ret == NULL) {
+			perror("inet_ntop");
+			continue;
+		}
+
 		/* send to systemd-journald */
 		sd_journal_send("MESSAGE=%s", buffer,
-			"SYSLOG_IDENTIFIER=%s", inet_ntoa(cliAddr.sin_addr),
+			"SYSLOG_IDENTIFIER=%s", addr_buf,
 			"PRIORITY=%i", priority,
 			NULL);
 
