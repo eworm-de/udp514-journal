@@ -30,9 +30,15 @@ Additionally a systemd unit file is installed to
 Usage
 -----
 
-Just run `udp514-journal` or start a systemd unit with
-`systemctl start udp514-journal`. Make sure UDP port 514 is not blocked
-in your firewall.
+Just run `udp514-journal` or start a systemd unit with:
+
+    systemctl start udp514-journal.service
+
+Make sure UDP port 514 is not blocked in your firewall.
+
+To enable it permanently to make it start on system boot run:
+
+    systemctl enable --now udp514-journal.service
 
 Use `journalctl` to view the logs:
 
