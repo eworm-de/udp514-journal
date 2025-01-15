@@ -7,19 +7,9 @@
 
 [Unit]
 Description=Forward syslog from network (udp/514) to journal
-Requires=systemd-journald.socket
-Requires=udp514-journal.socket
-After=network.target
 
-[Service]
-Type=notify
-Restart=always
-ExecStart=/usr/bin/udp514-journal
-DynamicUser=on
-ProtectSystem=full
-ProtectHome=on
-PrivateDevices=on
-NoNewPrivileges=on
+[Socket]
+ListenDatagram=514
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=sockets.target

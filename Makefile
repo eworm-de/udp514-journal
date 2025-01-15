@@ -32,6 +32,7 @@ install: install-bin install-doc
 install-bin: udp514-journal
 	$(INSTALL) -D -m0755 udp514-journal $(DESTDIR)/usr/bin/udp514-journal
 	$(INSTALL) -D -m0644 udp514-journal.service $(DESTDIR)/usr/lib/systemd/system/udp514-journal.service
+	$(INSTALL) -D -m0644 udp514-journal.socket $(DESTDIR)/usr/lib/systemd/system/udp514-journal.socket
 
 install-doc: README.html
 	$(INSTALL) -D -m0644 README.md $(DESTDIR)/usr/share/doc/udp514-journal/README.md

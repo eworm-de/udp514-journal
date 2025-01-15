@@ -19,7 +19,7 @@
 #include "udp514-journal.h"
 
 int main(int argc, char **argv) {
-	int sock;
+	int activation, sock;
 	unsigned int count = 0;
 
 	/* socket address for listening */
@@ -27,20 +27,29 @@ int main(int argc, char **argv) {
 	struct sockaddr     *addr_listen     = (struct sockaddr *)     &ss_listen;
 	struct sockaddr_in6 *addr_listen_in6 = (struct sockaddr_in6 *) &ss_listen;
 
-	/* open socket */
-	if ((sock = socket(AF_INET6, SOCK_DGRAM, 0)) < 0) {
-		perror("could not open socket");
-		return EXIT_FAILURE;
-	}
+	activation = sd_listen_fds(0);
 
-	/* bind local socket port */
-	addr_listen_in6->sin6_family = AF_INET6;
-	addr_listen_in6->sin6_addr = in6addr_any;
-	addr_listen_in6->sin6_scope_id = 0;
-	addr_listen_in6->sin6_port = htons(LOCAL_SERVER_PORT);
-	if (bind(sock, addr_listen, sizeof(struct sockaddr_in6)) < 0) {
-		perror("could not bind on port " LOCAL_SERVER_PORT_STR);
+	if (activation > 1) {
+		perror("too many file descriptors received");
 		return EXIT_FAILURE;
+	} else if (activation == 1) {
+		sock = SD_LISTEN_FDS_START + 0;
+	} else {
+		/* open socket, the usual way */
+		if ((sock = socket(AF_INET6, SOCK_DGRAM, 0)) < 0) {
+			perror("could not open socket");
+			return EXIT_FAILURE;
+		}
+
+		/* bind local socket port */
+		addr_listen_in6->sin6_family = AF_INET6;
+		addr_listen_in6->sin6_addr = in6addr_any;
+		addr_listen_in6->sin6_scope_id = 0;
+		addr_listen_in6->sin6_port = htons(LOCAL_SERVER_PORT);
+		if (bind(sock, addr_listen, sizeof(struct sockaddr_in6)) < 0) {
+			perror("could not bind on port " LOCAL_SERVER_PORT_STR);
+			return EXIT_FAILURE;
+		}
 	}
 
 	/* tell systemd we are ready to go... */
