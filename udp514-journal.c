@@ -20,22 +20,25 @@
 
 int main(int argc, char **argv) {
 	int sock;
-	struct sockaddr_in cliAddr, servAddr;
-	const int opt_val = 1;
 	unsigned int count = 0;
 
+	/* socket address for listening */
+	struct sockaddr_storage ss_listen = {};
+	struct sockaddr     *addr_listen     = (struct sockaddr *)     &ss_listen;
+	struct sockaddr_in6 *addr_listen_in6 = (struct sockaddr_in6 *) &ss_listen;
+
 	/* open socket */
-	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+	if ((sock = socket(AF_INET6, SOCK_DGRAM, 0)) < 0) {
 		perror("could not open socket");
 		return EXIT_FAILURE;
 	}
 
 	/* bind local socket port */
-	servAddr.sin_family = AF_INET;
-	servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	servAddr.sin_port = htons(LOCAL_SERVER_PORT);
-	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt_val, sizeof(opt_val));
-	if (bind(sock, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
+	addr_listen_in6->sin6_family = AF_INET6;
+	addr_listen_in6->sin6_addr = in6addr_any;
+	addr_listen_in6->sin6_scope_id = 0;
+	addr_listen_in6->sin6_port = htons(LOCAL_SERVER_PORT);
+	if (bind(sock, addr_listen, sizeof(struct sockaddr_in6)) < 0) {
 		perror("could not bind on port " LOCAL_SERVER_PORT_STR);
 		return EXIT_FAILURE;
 	}
@@ -45,21 +48,26 @@ int main(int argc, char **argv) {
 
 	/* server loop */
 	while (1) {
-		char buffer[BUFFER_SIZE];
+		char addr_buf[INET6_ADDRSTRLEN], msg_buf[BUFFER_SIZE];
 		socklen_t len;
 		char * match;
 		CODE * pri;
 		uint8_t priority = LOG_INFO;
 
-		memset(buffer, 0, BUFFER_SIZE);
-		len = sizeof(cliAddr);
-		if (recvfrom(sock, buffer, BUFFER_SIZE, 0, (struct sockaddr *) &cliAddr, &len) < 0) {
+		/* socket address for client */
+		struct sockaddr_storage ss_client = {};
+		struct sockaddr     *addr_client     = (struct sockaddr *)     &ss_client;
+		struct sockaddr_in6 *addr_client_in6 = (struct sockaddr_in6 *) &ss_client;
+
+		memset(msg_buf, 0, BUFFER_SIZE);
+		len = sizeof(struct sockaddr_storage);
+		if (recvfrom(sock, msg_buf, BUFFER_SIZE, 0, addr_client, &len) < 0) {
 			perror("could not receive data");
 			continue;
 		}
 
 		/* parse priority */
-		if ((match = strndup(buffer, BUFFER_SIZE)) != NULL) {
+		if ((match = strndup(msg_buf, BUFFER_SIZE)) != NULL) {
 			char * space = strchr(match, ' ');
 			if (space != NULL)
 				*space = 0;
@@ -68,9 +76,15 @@ int main(int argc, char **argv) {
 			priority = pri->c_val;
 		}
 
+		/* get client's ip address */
+		if ((inet_ntop(AF_INET6, &addr_client_in6->sin6_addr, addr_buf, INET6_ADDRSTRLEN)) == NULL) {
+			perror("could not get clients ip address");
+			continue;
+		}
+
 		/* send to systemd-journald */
-		sd_journal_send("MESSAGE=%s", buffer,
-			"SYSLOG_IDENTIFIER=%s", inet_ntoa(cliAddr.sin_addr),
+		sd_journal_send("MESSAGE=%s", msg_buf,
+			"SYSLOG_IDENTIFIER=%s", addr_buf,
 			"PRIORITY=%i", priority,
 			NULL);
 
