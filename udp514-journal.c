@@ -49,6 +49,7 @@ int main(int argc, char **argv) {
 	/* server loop */
 	while (1) {
 		char addr_buf[INET6_ADDRSTRLEN], msg_buf[BUFFER_SIZE];
+		const char * address;
 		socklen_t len;
 		char * match;
 		CODE * pri;
@@ -77,14 +78,20 @@ int main(int argc, char **argv) {
 		}
 
 		/* get client's ip address */
-		if ((inet_ntop(AF_INET6, &addr_client_in6->sin6_addr, addr_buf, INET6_ADDRSTRLEN)) == NULL) {
+		address =inet_ntop(AF_INET6, &addr_client_in6->sin6_addr, addr_buf, INET6_ADDRSTRLEN);
+		if (address == NULL) {
 			perror("could not get clients ip address");
 			continue;
 		}
 
+		/* strip prefix from mapped ipv4 addresses */
+		if (strncmp(address, "::ffff:", 7) == 0) {
+			address += 7;
+		}
+
 		/* send to systemd-journald */
 		sd_journal_send("MESSAGE=%s", msg_buf,
-			"SYSLOG_IDENTIFIER=%s", addr_buf,
+			"SYSLOG_IDENTIFIER=%s", address,
 			"PRIORITY=%i", priority,
 			NULL);
 

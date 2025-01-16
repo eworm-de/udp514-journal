@@ -37,17 +37,17 @@ in your firewall.
 Use `journalctl` to view the logs:
 
     $ journalctl -u udp514-journal
-    Jun 07 08:15:22 server ::ffff:10.0.0.1[548]: dhcp,info mikrotik1: intern assigned 10.0.0.50 to 00:11:22:33:44:55
-    Jun 07 09:16:59 server ::ffff:10.0.0.1[548]: interface,info mikrotik1: en7 link down
-    Jun 07 09:17:17 server ::ffff:10.0.0.1[548]: interface,info mikrotik1: en7 link up (speed 100M, full duplex)
-    Jun 07 10:07:16 server ::ffff:10.1.1.1[548]: wireless,info mikrotik2: 00:11:22:33:44:66@wl2-guest: connected, signal strength -36
-    Jun 07 10:07:21 server ::ffff:10.1.1.1[548]: dhcp,info mikrotik2: guest assigned 192.168.1.50 to 00:11:22:33:44:66
+    Jun 07 08:15:22 server 10.0.0.1[548]: dhcp,info mikrotik1: intern assigned 10.0.0.50 to 00:11:22:33:44:55
+    Jun 07 09:16:59 server 10.0.0.1[548]: interface,info mikrotik1: en7 link down
+    Jun 07 09:17:17 server 10.0.0.1[548]: interface,info mikrotik1: en7 link up (speed 100M, full duplex)
+    Jun 07 10:07:16 server 10.1.1.1[548]: wireless,info mikrotik2: 00:11:22:33:44:66@wl2-guest: connected, signal strength -36
+    Jun 07 10:07:21 server 10.1.1.1[548]: dhcp,info mikrotik2: guest assigned 192.168.1.50 to 00:11:22:33:44:66
 
 Filtering is available with matching `SYSLOG_IDENTIFIER` the ip address:
 
-    $ journalctl -u udp514-journal SYSLOG_IDENTIFIER=::ffff:10.1.1.1
-    Jun 07 10:07:16 server ::ffff:10.1.1.1[548]: wireless,info mikrotik2: 00:11:22:33:44:66@wl2-guest: connected, signal strength -36
-    Jun 07 10:07:21 server ::ffff:10.1.1.1[548]: dhcp,info mikrotik2: guest assigned 192.168.1.50 to 00:11:22:33:44:66
+    $ journalctl -u udp514-journal SYSLOG_IDENTIFIER=10.1.1.1
+    Jun 07 10:07:16 server 10.1.1.1[548]: wireless,info mikrotik2: 00:11:22:33:44:66@wl2-guest: connected, signal strength -36
+    Jun 07 10:07:21 server 10.1.1.1[548]: dhcp,info mikrotik2: guest assigned 192.168.1.50 to 00:11:22:33:44:66
 
 License and warranty
 --------------------
