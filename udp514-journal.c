@@ -67,6 +67,7 @@ int main(int argc, char **argv) {
 		/* socket address for client */
 		struct sockaddr_storage ss_client = {};
 		struct sockaddr     *addr_client     = (struct sockaddr *)     &ss_client;
+		struct sockaddr_in  *addr_client_in  = (struct sockaddr_in *)  &ss_client;
 		struct sockaddr_in6 *addr_client_in6 = (struct sockaddr_in6 *) &ss_client;
 
 		memset(msg_buf, 0, BUFFER_SIZE);
@@ -87,7 +88,19 @@ int main(int argc, char **argv) {
 		}
 
 		/* get client's ip address */
-		address =inet_ntop(AF_INET6, &addr_client_in6->sin6_addr, addr_buf, INET6_ADDRSTRLEN);
+		switch (addr_client->sa_family) {
+			case AF_INET6:
+				address = inet_ntop(AF_INET6, &addr_client_in6->sin6_addr,
+					addr_buf, INET6_ADDRSTRLEN);
+				break;
+			case AF_INET:
+				address = inet_ntop(AF_INET, &addr_client_in->sin_addr,
+					addr_buf, INET6_ADDRSTRLEN);
+				break;
+			default:
+				fputs("unhadled address family", stderr);
+				continue;
+		}
 		if (address == NULL) {
 			perror("could not get clients ip address");
 			continue;
