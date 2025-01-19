@@ -25,6 +25,7 @@ int main(int argc, char **argv) {
 	/* socket address for listening */
 	struct sockaddr_storage ss_listen = {};
 	struct sockaddr     *addr_listen     = (struct sockaddr *)     &ss_listen;
+	struct sockaddr_in  *addr_listen_in  = (struct sockaddr_in *)  &ss_listen;
 	struct sockaddr_in6 *addr_listen_in6 = (struct sockaddr_in6 *) &ss_listen;
 
 	activation = sd_listen_fds(0);
@@ -34,14 +35,8 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	} else if (activation == 1) {
 		sock = SD_LISTEN_FDS_START + 0;
-	} else {
-		/* open socket, the usual way */
-		if ((sock = socket(AF_INET6, SOCK_DGRAM, 0)) < 0) {
-			perror("could not open socket");
-			return EXIT_FAILURE;
-		}
-
-		/* bind local socket port */
+	} else if ((sock = socket(AF_INET6, SOCK_DGRAM, 0)) > 0) {
+		/* bind local socket port - IPv6 */
 		addr_listen_in6->sin6_family = AF_INET6;
 		addr_listen_in6->sin6_addr = in6addr_any;
 		addr_listen_in6->sin6_scope_id = 0;
@@ -50,6 +45,18 @@ int main(int argc, char **argv) {
 			perror("could not bind on port " LOCAL_SERVER_PORT_STR);
 			return EXIT_FAILURE;
 		}
+	} else if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) > 0) {
+		/* bind local socket port - fallback IPv4 */
+		addr_listen_in->sin_family = AF_INET;
+		addr_listen_in->sin_addr.s_addr = htonl(INADDR_ANY);
+		addr_listen_in->sin_port = htons(LOCAL_SERVER_PORT);
+		if (bind(sock, addr_listen, sizeof(struct sockaddr_in)) < 0) {
+			perror("could not bind on port " LOCAL_SERVER_PORT_STR);
+			return EXIT_FAILURE;
+		}
+	} else {
+		perror("could not open socket");
+		return EXIT_FAILURE;
 	}
 
 	/* tell systemd we are ready to go... */
