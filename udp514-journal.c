@@ -43,6 +43,7 @@ int main(int argc, char **argv) {
 		addr_listen_in6->sin6_port = htons(LOCAL_SERVER_PORT);
 		if (bind(sock, addr_listen, sizeof(struct sockaddr_in6)) < 0) {
 			perror("could not bind on port " LOCAL_SERVER_PORT_STR);
+			close(sock);
 			return EXIT_FAILURE;
 		}
 	} else if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) > 0) {
@@ -52,6 +53,7 @@ int main(int argc, char **argv) {
 		addr_listen_in->sin_port = htons(LOCAL_SERVER_PORT);
 		if (bind(sock, addr_listen, sizeof(struct sockaddr_in)) < 0) {
 			perror("could not bind on port " LOCAL_SERVER_PORT_STR);
+			close(sock);
 			return EXIT_FAILURE;
 		}
 	} else {
