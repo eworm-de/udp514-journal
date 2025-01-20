@@ -34,6 +34,7 @@ int main(int argc, char **argv) {
 		perror("too many file descriptors received");
 		return EXIT_FAILURE;
 	} else if (activation == 1) {
+		/* use the socket passed from systemd */
 		sock = SD_LISTEN_FDS_START + 0;
 	} else if ((sock = socket(AF_INET6, SOCK_DGRAM, 0)) > 0) {
 		/* bind local socket port - IPv6 */
