@@ -100,8 +100,12 @@ int main(int argc, char **argv) {
 		/* get client's ip address */
 		switch (addr_client->sa_family) {
 			case AF_INET6:
-				address = inet_ntop(AF_INET6, &addr_client_in6->sin6_addr,
-					addr_buf, INET6_ADDRSTRLEN);
+				const struct in6_addr *in6_addr = &addr_client_in6->sin6_addr;
+				address = inet_ntop(AF_INET6, in6_addr, addr_buf, INET6_ADDRSTRLEN);
+				/* strip prefix (::ffff:) from mapped ipv4 addresses */
+				if (address && IN6_IS_ADDR_V4MAPPED(in6_addr)) {
+					address += 7;
+				}
 				break;
 			case AF_INET:
 				address = inet_ntop(AF_INET, &addr_client_in->sin_addr,
@@ -114,11 +118,6 @@ int main(int argc, char **argv) {
 		if (address == NULL) {
 			perror("could not get clients ip address");
 			continue;
-		}
-
-		/* strip prefix from mapped ipv4 addresses */
-		if (strncmp(address, "::ffff:", 7) == 0) {
-			address += 7;
 		}
 
 		/* send to systemd-journald */
