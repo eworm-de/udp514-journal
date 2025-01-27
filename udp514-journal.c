@@ -108,8 +108,8 @@ int main(int argc, char **argv) {
 				}
 				break;
 			case AF_INET:
-				address = inet_ntop(AF_INET, &addr_client_in->sin_addr,
-					addr_buf, INET6_ADDRSTRLEN);
+				const struct in_addr *in_addr = &addr_client_in->sin_addr;
+				address = inet_ntop(AF_INET, in_addr, addr_buf, INET6_ADDRSTRLEN);
 				break;
 			default:
 				fputs("unhadled address family", stderr);
