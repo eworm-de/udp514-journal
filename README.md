@@ -77,3 +77,6 @@ URL:
 Mirror:
 [eworm.de](https://git.eworm.de/cgit.cgi/udp514-journal/)
 [GitLab.com](https://gitlab.com/eworm-de/udp514-journal#udp514-journal)
+
+---
+[⬆️ Go back to top](#top)
