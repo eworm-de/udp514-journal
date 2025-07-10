@@ -1,6 +1,10 @@
 udp514-journal
 ==============
 
+[![GitHub stars](https://img.shields.io/github/stars/eworm-de/udp514-journal?logo=GitHub&style=flat&color=red)](https://github.com/eworm-de/udp514-journal/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/eworm-de/udp514-journal?logo=GitHub&style=flat&color=green)](https://github.com/eworm-de/udp514-journal/network)
+[![GitHub watchers](https://img.shields.io/github/watchers/eworm-de/udp514-journal?logo=GitHub&style=flat&color=blue)](https://github.com/eworm-de/udp514-journal/watchers)
+
 forward syslog from network (udp/514) to systemd-journald
 
 Requirements
