@@ -24,11 +24,11 @@ Build and install
 
 Building and installing is very easy. Just run:
 
-> make
+    make
 
 followed by:
 
-> make install
+    make install
 
 This will place an executable at `/usr/bin/udp514-journal`,
 documentation can be found in `/usr/share/doc/udp514-journal/`.
