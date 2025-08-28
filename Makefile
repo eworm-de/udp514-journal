@@ -14,7 +14,8 @@ LDFLAGS	+= -Wl,-z,now -Wl,-z,relro -pie
 
 # this is just a fallback in case you do not use git but downloaded
 # a release tarball...
-VERSION := 0.2.1
+DISTVER := 0.2.1
+VERSION ?= $(shell git describe --long 2>/dev/null || echo $(DISTVER))
 
 all: udp514-journal README.html
 
@@ -45,6 +46,6 @@ distclean:
 	$(RM) -f *.o *~ udp514-journal README.html version.h config.h
 
 release:
-	git archive --format=tar.xz --prefix=udp514-journal-$(VERSION)/ $(VERSION) > udp514-journal-$(VERSION).tar.xz
-	gpg --armor --detach-sign --comment udp514-journal-$(VERSION).tar.xz udp514-journal-$(VERSION).tar.xz
-	git notes --ref=refs/notes/signatures/tar add -C $$(git archive --format=tar --prefix=udp514-journal-$(VERSION)/ $(VERSION) | gpg --armor --detach-sign --comment udp514-journal-$(VERSION).tar | git hash-object -w --stdin) $(VERSION)
+	git archive --format=tar.xz --prefix=udp514-journal-$(DISTVER)/ $(DISTVER) > udp514-journal-$(DISTVER).tar.xz
+	gpg --armor --detach-sign --comment udp514-journal-$(DISTVER).tar.xz udp514-journal-$(DISTVER).tar.xz
+	git notes --ref=refs/notes/signatures/tar add -C $$(git archive --format=tar --prefix=udp514-journal-$(DISTVER)/ $(DISTVER) | gpg --armor --detach-sign --comment udp514-journal-$(DISTVER).tar | git hash-object -w --stdin) $(DISTVER)
