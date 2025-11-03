@@ -20,7 +20,7 @@ VERSION ?= $(shell git describe --long 2>/dev/null || echo $(DISTVER))
 all: udp514-journal README.html
 
 version.h: $(wildcard .git/HEAD .git/index .git/refs/tags/*) Makefile
-	printf "#ifndef VERSION\n#define VERSION \"%s\"\n#endif\n" $(shell git describe --long 2>/dev/null || echo ${VERSION}) > $@
+	printf "#ifndef VERSION\n#define VERSION \"%s\"\n#endif\n" "$(VERSION)" > $@
 
 udp514-journal: udp514-journal.c udp514-journal.h version.h
 	$(CC) udp514-journal.c $(CFLAGS) $(LDFLAGS) -o udp514-journal
