@@ -27,10 +27,12 @@ udp514-journal: udp514-journal.c udp514-journal.h version.h
 README.html: README.md
 	$(MD) README.md > README.html
 
-install: install-bin install-doc
+install: install-bin install-doc install-units
 
 install-bin: udp514-journal
 	$(INSTALL) -D -m0755 udp514-journal $(DESTDIR)/usr/bin/udp514-journal
+
+install-units:
 	$(INSTALL) -D -m0644 udp514-journal.service $(DESTDIR)/usr/lib/systemd/system/udp514-journal.service
 	$(INSTALL) -D -m0644 udp514-journal.socket $(DESTDIR)/usr/lib/systemd/system/udp514-journal.socket
 
