@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <time.h>
+#include <ctype.h>
 
 #define SYSLOG_NAMES
 #define __USE_MISC
