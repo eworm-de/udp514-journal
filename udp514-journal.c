@@ -18,6 +18,37 @@
 
 #include "udp514-journal.h"
 
+static char *strip_syslog_header(char *msg) {
+	char *p = msg;
+
+	/* strip <PRI> */
+	if (*p == '<') {
+		char *end = strchr(p, '>');
+		if (end)
+			p = end + 1;
+	}
+
+	/* RFC3164: "MMM DD HH:MM:SS " */
+	if (strlen(p) >= 16 &&
+	    isalpha((unsigned char)p[0]) &&
+	    isalpha((unsigned char)p[1]) &&
+	    isalpha((unsigned char)p[2]) &&
+	    p[3] == ' ' &&
+	    isdigit((unsigned char)p[4])) {
+		p += 16;
+		return p;
+	}
+
+	/* RFC5424: "1 2025-12-19T11:13:52Z " */
+	if (isdigit((unsigned char)p[0]) && p[1] == ' ') {
+		char *ts_end = strchr(p + 2, ' ');
+		if (ts_end)
+			p = ts_end + 1;
+	}
+
+	return p;
+}
+
 int main(int argc, char **argv) {
 	int activation, sock;
 	unsigned int count = 0;
@@ -120,8 +151,10 @@ int main(int argc, char **argv) {
 			continue;
 		}
 
+		char *clean_msg = strip_syslog_header(msg_buf);
+
 		/* send to systemd-journald */
-		sd_journal_send("MESSAGE=%s", msg_buf,
+		sd_journal_send("MESSAGE=%s", clean_msg,
 			"SYSLOG_IDENTIFIER=%s", address,
 			"PRIORITY=%i", priority,
 			NULL);
