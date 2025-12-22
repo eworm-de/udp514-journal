@@ -48,4 +48,8 @@
 #define LOCAL_SERVER_PORT_STR STR(LOCAL_SERVER_PORT)
 #define BUFFER_SIZE 1024
 
+/* RFC 3164 date: "Oct 11 22:14:15"
+   https://www.rfc-editor.org/rfc/rfc3164 */
+#define DATE_RFC3164 "[A-Za-z]\\{3\\} [ 123][0-9] [ 012][0-9]:[0-5][0-9]:[0-6][0-9]"
+
 #endif /* _UDP514_JOURNAL_H */

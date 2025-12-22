@@ -115,6 +115,9 @@ int main(int argc, char **argv) {
 		/* ... and strip it */
 		msg_ptr += regex_match(msg_ptr, "^<[0-9]\\{1,3\\}>");
 
+		/* strip RFC 3164 date */
+		msg_ptr += regex_match(msg_ptr, "^" DATE_RFC3164 " ");
+
 		/* parse priority from text (Mikrotik) */
 		if (priority == UINT8_MAX && (match = strndup(msg_ptr, BUFFER_SIZE)) != NULL) {
 			char * space = strchr(match, ' ');
