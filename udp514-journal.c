@@ -112,6 +112,9 @@ int main(int argc, char **argv) {
 		if (priority == UINT8_MAX && sscanf(msg_ptr, "<%3" SCNu8 ">", &priority) > 0)
 			priority = LOG_PRI(priority);
 
+		/* ... and strip it */
+		msg_ptr += regex_match(msg_ptr, "^<[0-9]\\{1,3\\}>");
+
 		/* parse priority from text (Mikrotik) */
 		if (priority == UINT8_MAX && (match = strndup(msg_ptr, BUFFER_SIZE)) != NULL) {
 			char * space = strchr(match, ' ');
