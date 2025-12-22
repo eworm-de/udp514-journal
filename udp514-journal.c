@@ -88,6 +88,10 @@ int main(int argc, char **argv) {
 		}
 		msg_ptr = msg_buf;
 
+		/* parse priority '<PRI>' */
+		if (priority == UINT8_MAX && sscanf(msg_ptr, "<%3" SCNu8 ">", &priority) > 0)
+			priority = LOG_PRI(priority);
+
 		/* parse priority */
 		if (priority == UINT8_MAX && (match = strndup(msg_ptr, BUFFER_SIZE)) != NULL) {
 			char * space = strchr(match, ' ');
