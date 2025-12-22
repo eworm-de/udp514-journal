@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
 		socklen_t len;
 		char * match;
 		CODE * pri;
-		uint8_t priority = LOG_INFO;
+		uint8_t priority = UINT8_MAX;
 
 		/* socket address for client */
 		struct sockaddr_storage ss_client = {};
@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
 		}
 
 		/* parse priority */
-		if ((match = strndup(msg_buf, BUFFER_SIZE)) != NULL) {
+		if (priority == UINT8_MAX && (match = strndup(msg_buf, BUFFER_SIZE)) != NULL) {
 			char * space = strchr(match, ' ');
 			if (space != NULL)
 				*space = 0;
@@ -96,6 +96,10 @@ int main(int argc, char **argv) {
 			free(match);
 			priority = pri->c_val;
 		}
+
+		/* set default priority of 'info' */
+		if (priority == UINT8_MAX)
+			priority = LOG_INFO;
 
 		/* get client's ip address */
 		switch (addr_client->sa_family) {
