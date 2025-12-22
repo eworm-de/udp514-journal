@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
 		socklen_t len;
 		char * match;
 		CODE * pri;
-		uint8_t priority = UINT8_MAX;
+		uint8_t facility = LOG_USER, priority = UINT8_MAX;
 
 		/* socket address for client */
 		struct sockaddr_storage ss_client = {};
@@ -109,8 +109,10 @@ int main(int argc, char **argv) {
 		msg_ptr = msg_buf;
 
 		/* parse priority '<PRI>' */
-		if (priority == UINT8_MAX && sscanf(msg_ptr, "<%3" SCNu8 ">", &priority) > 0)
+		if (priority == UINT8_MAX && sscanf(msg_ptr, "<%3" SCNu8 ">", &priority) > 0) {
+			facility = LOG_FAC(priority);
 			priority = LOG_PRI(priority);
+		}
 
 		/* ... and strip it */
 		msg_ptr += regex_match(msg_ptr, "^<[0-9]\\{1,3\\}>");
@@ -161,6 +163,7 @@ int main(int argc, char **argv) {
 		/* send to systemd-journald */
 		sd_journal_send("MESSAGE=%s", msg_ptr,
 			"SYSLOG_IDENTIFIER=%s", address,
+			"SYSLOG_FACILITY=%i", facility,
 			"PRIORITY=%i", priority,
 			NULL);
 
