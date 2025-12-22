@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 	/* server loop */
 	while (1) {
 		char addr_buf[INET6_ADDRSTRLEN], msg_buf[BUFFER_SIZE];
-		const char * address;
+		const char * address, * msg_ptr;
 		socklen_t len;
 		char * match;
 		CODE * pri;
@@ -86,9 +86,10 @@ int main(int argc, char **argv) {
 			perror("could not receive data");
 			continue;
 		}
+		msg_ptr = msg_buf;
 
 		/* parse priority */
-		if (priority == UINT8_MAX && (match = strndup(msg_buf, BUFFER_SIZE)) != NULL) {
+		if (priority == UINT8_MAX && (match = strndup(msg_ptr, BUFFER_SIZE)) != NULL) {
 			char * space = strchr(match, ' ');
 			if (space != NULL)
 				*space = 0;
@@ -125,7 +126,7 @@ int main(int argc, char **argv) {
 		}
 
 		/* send to systemd-journald */
-		sd_journal_send("MESSAGE=%s", msg_buf,
+		sd_journal_send("MESSAGE=%s", msg_ptr,
 			"SYSLOG_IDENTIFIER=%s", address,
 			"PRIORITY=%i", priority,
 			NULL);
