@@ -18,6 +18,26 @@
 
 #include "udp514-journal.h"
 
+static int regex_match(const char * string, const char * pattern) {
+	size_t length = 0;
+	regex_t preg;
+	regmatch_t pmatch;
+
+	/* prepare pattern matching */
+	if (regcomp(&preg, pattern, 0) != 0) {
+		fprintf(stderr, "regcomp() failed, returning nonzero\n");
+		return 0;
+	}
+
+	/* match the pattern */
+	if (regexec(&preg, string, 1, &pmatch, 0) == 0)
+		length = pmatch.rm_eo - pmatch.rm_so;
+
+	/* free and return */
+	regfree(&preg);
+	return length;
+}
+
 int main(int argc, char **argv) {
 	int activation, sock;
 	unsigned int count = 0;
