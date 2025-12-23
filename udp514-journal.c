@@ -164,6 +164,7 @@ int main(int argc, char **argv) {
 		sd_journal_send("MESSAGE=%s", msg_ptr,
 			"SYSLOG_IDENTIFIER=%s", address,
 			"SYSLOG_FACILITY=%i", facility,
+			"SYSLOG_RAW=%s", msg_buf,
 			"PRIORITY=%i", priority,
 			NULL);
 
