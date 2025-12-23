@@ -14,7 +14,7 @@ LDFLAGS	+= -Wl,-z,now -Wl,-z,relro -pie
 
 # this is just a fallback in case you do not use git but downloaded
 # a release tarball...
-DISTVER := 0.2.1
+DISTVER := 0.3.0
 VERSION ?= $(shell git describe --long 2>/dev/null || echo $(DISTVER))
 
 all: udp514-journal README.html
