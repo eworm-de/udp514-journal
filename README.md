@@ -5,7 +5,7 @@ udp514-journal
 [![GitHub forks](https://img.shields.io/github/forks/eworm-de/udp514-journal?logo=GitHub&style=flat&color=green)](https://github.com/eworm-de/udp514-journal/network)
 [![GitHub watchers](https://img.shields.io/github/watchers/eworm-de/udp514-journal?logo=GitHub&style=flat&color=blue)](https://github.com/eworm-de/udp514-journal/watchers)
 
-forward syslog from network (udp/514) to systemd-journald
+**forward syslog from network (udp/514) to systemd-journald**
 
 *Use at your own risk*, pay attention to
 [license and warranty](#license-and-warranty), and
